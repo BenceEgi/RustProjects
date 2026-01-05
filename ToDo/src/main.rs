@@ -1,0 +1,114 @@
+mod todo_list;
+mod cli;
+mod cerr;
+
+use todo_list::{Task, ToDo};
+use cli::Console;
+use std::collections::HashMap;
+use task_builder::create_new_task;
+
+mod menu {
+    use std::io::{stdin, Write};
+    use colored::Colorize;
+
+    pub fn menu_points() -> String{
+        println!("\n{}\n{}\n{}\n{}\n\n{}\n{}\n", String::from("Add:         (1)").blue(), String::from("Edit:        (2)").blue(), String::from("Change Done: (3)").blue(), String::from("Remove:      (4)").red(), String::from("Save:      (5)").green(), String::from("Load:      (6)").green());
+        let mut option: String = String::new();
+        print!("Menu Option: ");
+        std::io::stdout().flush().unwrap();
+        stdin().read_line(&mut option).unwrap();
+        option.trim().to_string()
+    }
+}
+
+mod save_and_load{
+    use std::collections::HashMap;
+    use std::fs::File;
+    use std::io::{BufRead, BufReader, BufWriter, Write};
+    use crate::todo_list::{Task, ToDo};
+
+    pub fn load() -> ToDo{
+        let reader = BufReader::new(File::open("save.txt").unwrap());
+        let mut task_list = HashMap::new();
+        for line in reader.lines().filter_map(|l| l.ok()){
+            let parts: Vec<&str>  = line.split(";").collect();
+            task_list.insert(parts[0].to_string(), Task{name: parts[0].to_string(), description: parts[1].to_string(), is_done: parts[2].parse().expect("kaki a fajl!")});
+        }
+        ToDo{task_list}
+    }
+
+    pub fn save(task_list: &HashMap<String, Task>){
+        let mut stream = BufWriter::new(File::create("save.txt").unwrap());
+        for (key, task) in task_list {
+            writeln!(stream, "{};{};{}",key,task.description,task.is_done).unwrap();
+        }
+        stream.flush().unwrap();
+    }
+}
+
+mod task_builder {
+    use std::io::{stdin, Write};
+    use crate::todo_list::Task;
+
+    pub fn set_name() -> String{
+        let mut title: String = String::new();
+        print!("Task title: ");
+        _ = std::io::stdout().flush();
+        _ = stdin().read_line(&mut title);
+        title.trim().to_string()
+    }
+
+    pub fn set_description() -> String{
+        let mut description: String = String::new();
+        print!("Task description: ");
+        std::io::stdout().flush().unwrap();
+        stdin().read_line(&mut description).unwrap();
+        description.trim().to_string()
+    }
+
+    pub fn create_new_task() -> Task {
+        Task{name: set_name(), description: set_description(), is_done:false}
+    }
+}
+
+fn main() {
+    let task_list: HashMap<String, Task> = HashMap::new();
+    let mut todo = ToDo{ task_list };
+    loop {
+        todo.print_out_tasks();
+        let option = menu::menu_points();
+        match option.as_str() {
+            "1" => {
+                let task = create_new_task();
+                todo.add_task(task);
+            }
+            "2" => {
+                let name = task_builder::set_name();
+                let description = task_builder::set_description();
+                todo.edit_task(name, description);
+                Console::clear();
+            }
+            "3" => {
+                let name = task_builder::set_name();
+                todo.change_to_done(name);
+                Console::clear();
+            }
+            "4" => {
+                let name = task_builder::set_name();
+                todo.remove_task(&name);
+            }
+            "5" => {
+                save_and_load::save(&todo.task_list);
+                Console::clear();
+            }
+            "6" => {
+                todo = save_and_load::load();
+                Console::clear();
+            }
+            _ => {
+                Console::clear();
+                cerr::throw_error("Invalid option!\n");
+            }
+        }
+    }
+}
