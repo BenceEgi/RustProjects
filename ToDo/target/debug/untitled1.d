@@ -1,0 +1,1 @@
+/home/bence/Documents/GitHub/RustProjects/ToDo/target/debug/untitled1: /home/bence/Documents/GitHub/RustProjects/ToDo/src/cerr.rs /home/bence/Documents/GitHub/RustProjects/ToDo/src/cli.rs /home/bence/Documents/GitHub/RustProjects/ToDo/src/main.rs /home/bence/Documents/GitHub/RustProjects/ToDo/src/todo_list.rs

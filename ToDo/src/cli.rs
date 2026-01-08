@@ -3,8 +3,8 @@ use std::io::Write;
 pub struct Console {}
 
 impl Console {
-    pub fn clear(){
-        print!("{}[2J", 27 as char);
+    pub fn clear() {
+        print!("\x1Bc");
         std::io::stdout().flush().unwrap();
     }
 }
