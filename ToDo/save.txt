@@ -1,5 +1,0 @@
-Webprogramozas;Memoriajatek;false
-Rust;Programozz!;false
-Angol;Fogalmazas;false
-Matematika;Matek project feladat;false
-GameDev;Talaj megoldast, arra, hogy a metaballok, mikent generalodjanak;false

@@ -4,7 +4,13 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 
 pub fn load() -> ToDo {
-    let reader = BufReader::new(File::open("save.txt").unwrap());
+    let file_result = File::open("save.txt");
+    let file;
+    match file_result {
+        Ok(f) => {file = f},
+        Err(_e) => { file = File::create_new("./save.txt").unwrap() }
+    }
+    let reader = BufReader::new(file);
     let mut task_list = HashMap::new();
     for line in reader.lines().filter_map(|l| l.ok()) {
         let parts: Vec<&str> = line.split(";").collect();
