@@ -7,30 +7,31 @@ use std::collections::HashMap;
 use std::process::exit;
 use task_builder::create_new_task;
 use todo_list::{Task, ToDo};
+use crate::cerr::CErr;
 
 mod menu {
-    use colored::Colorize;
+    use colored::{Colorize};
     use std::io::{stdin, Write};
 
     pub fn state_menu_points(){
         println!(
-            "{}    {}    {}",
-            String::from("Save:      (5)").green(),
-            String::from("Load:      (6)").green(),
-            String::from("Exit:      (7)").red()
+            "{}{}{}",
+            String::from("|Save:      (5)|").black().on_green(),
+            String::from("|Load:      (6)|").black().on_cyan(),
+            String::from("|Exit:      (7)|").black().on_red()
         )
     }
 
     pub fn control_menu_points() -> String {
         println!(
-            "\n{}\n{}\n{}\n{}\n",
-            String::from("Add:         (1)").blue(),
-            String::from("Edit:        (2)").blue(),
-            String::from("Change Done: (3)").blue(),
-            String::from("Remove:      (4)").red(),
+            "\nControls: \n{}\n{}\n{}\n{}\n",
+            String::from("|Add:         (1)|").cyan(),
+            String::from("|Edit:        (2)|").cyan(),
+            String::from("|Change Done: (3)|").cyan(),
+            String::from("|Remove:      (4)|").red(),
         );
         let mut option: String = String::new();
-        print!("Menu Option: ");
+        print!("Command: ");
         std::io::stdout().flush().unwrap();
         stdin().read_line(&mut option).unwrap();
         option.trim().to_string()
@@ -53,7 +54,7 @@ mod save_and_load {
                 Task {
                     name: parts[0].to_string(),
                     description: parts[1].to_string(),
-                    is_done: parts[2].parse().expect("kaki a fajl!"),
+                    is_done: parts[2].parse().expect("Not able to open the save!"),
                 },
             );
         }
@@ -99,6 +100,7 @@ mod task_builder {
 }
 
 fn main() {
+    Console::clear();
     let task_list: HashMap<String, Task> = HashMap::new();
     let mut todo = ToDo { task_list };
     loop {
@@ -114,12 +116,10 @@ fn main() {
                 let name = task_builder::set_name();
                 let description = task_builder::set_description();
                 todo.edit_task(name, description);
-                Console::clear();
             }
             "3" => {
                 let name = task_builder::set_name();
                 todo.change_to_done(name);
-                Console::clear();
             }
             "4" => {
                 let name = task_builder::set_name();
@@ -138,7 +138,7 @@ fn main() {
             }
             _ => {
                 Console::clear();
-                cerr::throw_error("Invalid option!\n");
+                CErr::throw_error("Invalid option!\n");
             }
         }
     }
