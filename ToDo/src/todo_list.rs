@@ -29,8 +29,8 @@ impl<'a> ToDo {
 
         for (name, task) in &self.task_list {
             println!(" {}:\n  Description: {}\n  Done: {}\n",
-                name.purple(),
-                task.description.blue(),
+                name.bright_magenta(),
+                task.description.bright_blue(),
                 if task.is_done {
                     String::from("✅")
                 } else {
