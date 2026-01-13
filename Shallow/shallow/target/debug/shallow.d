@@ -1,0 +1,1 @@
+/home/bence/Documents/GitHub/RustProjects/Shallow/shallow/target/debug/shallow: /home/bence/Documents/GitHub/RustProjects/Shallow/shallow/src/lexer.rs /home/bence/Documents/GitHub/RustProjects/Shallow/shallow/src/main.rs /home/bence/Documents/GitHub/RustProjects/Shallow/shallow/src/token.rs
